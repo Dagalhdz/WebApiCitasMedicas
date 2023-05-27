@@ -23,82 +23,37 @@ namespace WebApiCitasMedicas.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("RegistrarMedico")]
-        public async Task<ActionResult> RegisterDoctor(CreateUserDto createUserDto)
-        {
-            var user = new Medico
-            {
-                Nombre = createUserDto.Nombre,
-                ApellidoPaterno = createUserDto.ApellidoPaterno,
-                FechaNacimiento = createUserDto.FechaNacimiento,
-                UserName = createUserDto.UserName,
-                Email = createUserDto.Email,
-                MedicoInfo = createUserDto.MedicoInfo
-            };
-            var result = await _userManager.CreateAsync(user, createUserDto.Password);
-            if (!result.Succeeded) return BadRequest("Error al guardad");
-
-            return Ok("El dato se ha guradad Correctamente");
-        }
-        [HttpPost("RegistrarPaciente")]
-        public async Task<ActionResult> RegisterPaciente(CreateUserDto createUserDto)
-        {
-            var user = new Paciente
-            {
-                Nombre = createUserDto.Nombre,
-                ApellidoPaterno = createUserDto.ApellidoPaterno,
-                FechaNacimiento = createUserDto.FechaNacimiento,
-                UserName = createUserDto.UserName,
-                Email = createUserDto.Email,
-                PacientesInfo = createUserDto.MedicoInfo
-            };
-            var result = await _userManager.CreateAsync(user, createUserDto.Password);
-            if (!result.Succeeded) return NotFound("Error al guardad");
-
-            return Ok("El dato se ha guradad Correctamente");
-        }
-
-
-        [HttpPost("AgregarFamiliar")]
-        public async Task<ActionResult> AgregarFamiliar([FromBody] FamiliarDTO familiarDto)
-        {
-            var familiar = _mapper.Map<Familiares>(familiarDto);
-            _dbContext.Add(familiar);
-            await _dbContext.SaveChangesAsync();
-            return Ok("Agregado Correctamente");
-        }
+        
 
         [HttpGet]
-        public async Task<ActionResult<List<Medico>>> Get()
+        public async Task<ActionResult<List<GetUserDTO>>> Get()
         {
-            var doctors = await _dbContext.Medicos.ToListAsync();
-            if (doctors == null) return BadRequest("No se encontro nada");
-
-            return doctors;
+            var doctores = await _dbContext.Medicos.ToListAsync();
+            if (doctores == null) return BadRequest("No hay medicos");
+            var result = _mapper.Map<List<GetUserDTO>>(doctores);
+            return result;
         }
 
-        [HttpGet("user")]
-        public async Task<ActionResult<List<ApplicationUser>>> GetUser()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GetUserDTO>> GetById(string id)
         {
-            var user = await _userManager.Users.ToListAsync();
-            if (user == null) return BadRequest("No se encontro nada");
+            var medico = await _dbContext.Medicos.FirstOrDefaultAsync(medico => medico.Id == id);
+            if (medico == null) return NotFound($"No se encontro {id}");
 
-            return user;
-        }
-        [HttpGet("paciente")]
-        public async Task<ActionResult<List<Paciente>>> GetPacientes()
-        {
-            var pacientes = await _dbContext.Pacientes.ToListAsync();
-            if (pacientes == null) return BadRequest("No se encontro nada");
+            var result = _mapper.Map<GetUserDTO>(medico);
 
-            return pacientes;
+            return result;
         }
 
-        [HttpGet("paciente/{id}/familiares")]
-        public async Task<ActionResult<List<FamiliarDTO>>> GetFamiliar(string id)
-        {
-            var familiares = await  _dbContext.Familiares.Where(p => p.PacienteId == id).ToListAsync();
-            return _mapper.Map<List<FamiliarDTO>>(familiares);
-        }
+
+        //[HttpGet("user")]
+        //public async Task<ActionResult<List<ApplicationUser>>> GetUser()
+        //{
+        //    var user = await _userManager.Users.ToListAsync();
+        //    if (user == null) return BadRequest("No se encontro nada");
+
+        //    return user;
+        //}
+
     }
 }

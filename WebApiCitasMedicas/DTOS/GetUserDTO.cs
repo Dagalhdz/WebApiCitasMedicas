@@ -1,11 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace WebApiCitasMedicas.DTOS
 {
-    public class CreateUserDto
+    public class GetUserDTO
     {
         [Required]
-        public string UserName { get; set;}
+        public string Id { get; set; }
+        [Required]
+        public string UserName { get; set; }
         [Required(ErrorMessage = "El nombre es requerido")]
         [StringLength(maximumLength: 150, ErrorMessage = "El campo paso el maximo de 150 carateres")]
         public string Nombre { get; set; }
@@ -23,11 +26,9 @@ namespace WebApiCitasMedicas.DTOS
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{dd/MM/yyyy}")]
         public DateTime FechaNacimiento { get; set; }
         [Required]
-        [EmailAddress]
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
         public string Info { get; set; }
-        [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
+
     }
 }

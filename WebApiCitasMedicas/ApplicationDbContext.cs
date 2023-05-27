@@ -47,6 +47,12 @@ namespace WebApiCitasMedicas
                 .WithMany()
                 .HasForeignKey(p => p.FamiliarId)
                 .OnDelete(DeleteBehavior.Restrict);
+            
+            builder.Entity<Familiares>()
+                .HasOne(p => p.Parentesco)
+                .WithMany()
+                .HasForeignKey(p => p.ParentescoId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
 

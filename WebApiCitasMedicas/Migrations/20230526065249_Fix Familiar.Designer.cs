@@ -12,8 +12,8 @@ using WebApiCitasMedicas;
 namespace WebApiCitasMedicas.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230525223016_Initial")]
-    partial class Initial
+    [Migration("20230526065249_Fix Familiar")]
+    partial class FixFamiliar
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -292,6 +292,9 @@ namespace WebApiCitasMedicas.Migrations
                     b.Property<int>("ParentescoId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ParentescoId1")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("FamiliarId");
@@ -299,6 +302,8 @@ namespace WebApiCitasMedicas.Migrations
                     b.HasIndex("PacienteId");
 
                     b.HasIndex("ParentescoId");
+
+                    b.HasIndex("ParentescoId1");
 
                     b.ToTable("Familiares");
                 });
@@ -520,10 +525,14 @@ namespace WebApiCitasMedicas.Migrations
                         .IsRequired();
 
                     b.HasOne("WebApiCitasMedicas.Entities.Parentesco", "Parentesco")
-                        .WithMany("Familias")
+                        .WithMany()
                         .HasForeignKey("ParentescoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("WebApiCitasMedicas.Entities.Parentesco", null)
+                        .WithMany("Familias")
+                        .HasForeignKey("ParentescoId1");
 
                     b.Navigation("Paciente");
 

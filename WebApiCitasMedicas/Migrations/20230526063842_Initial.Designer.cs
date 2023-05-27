@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApiCitasMedicas;
 
@@ -11,9 +12,11 @@ using WebApiCitasMedicas;
 namespace WebApiCitasMedicas.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230526063842_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -289,9 +292,6 @@ namespace WebApiCitasMedicas.Migrations
                     b.Property<int>("ParentescoId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ParentescoId1")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("FamiliarId");
@@ -299,8 +299,6 @@ namespace WebApiCitasMedicas.Migrations
                     b.HasIndex("PacienteId");
 
                     b.HasIndex("ParentescoId");
-
-                    b.HasIndex("ParentescoId1");
 
                     b.ToTable("Familiares");
                 });
@@ -522,14 +520,10 @@ namespace WebApiCitasMedicas.Migrations
                         .IsRequired();
 
                     b.HasOne("WebApiCitasMedicas.Entities.Parentesco", "Parentesco")
-                        .WithMany()
-                        .HasForeignKey("ParentescoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("WebApiCitasMedicas.Entities.Parentesco", null)
                         .WithMany("Familias")
-                        .HasForeignKey("ParentescoId1");
+                        .HasForeignKey("ParentescoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Paciente");
 

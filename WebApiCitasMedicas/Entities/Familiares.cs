@@ -12,9 +12,9 @@ namespace WebApiCitasMedicas.Entities
         [Required]
         public string FamiliarId { get; set; }
         [Required]
-        public Parentesco Parentesco { get; set; }
-        [Required]
+        public int ParentescoId { get; set; }
 
         public Paciente Paciente { get; set; }
+        public Parentesco Parentesco { get; set; }
     }
 }
